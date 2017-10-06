@@ -3,6 +3,5 @@ exports.home = {
   method: 'get',
   handler(request, reply) {
     reply.view('test', {});
-    // reply('micro-media');
   }
 };
