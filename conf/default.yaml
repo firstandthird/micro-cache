@@ -1,3 +1,10 @@
+verbose: true
+origin: '{{ENV.CACHE_ORIGIN}}'
+secret: '{{ENV.CACHE_SECRET}}'
+redis_host: '{{ENV.REDIS_HOST}}'
+redis_port: '{{ENV.REDIS_PORT}}'
+redis_password: '{{ENV.REDIS_PASSWORD}}'
+redis_prefix: 'prefix'
 plugins:
   hapi-auto-handler:
     _priority: -5
