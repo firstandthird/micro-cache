@@ -1,0 +1,32 @@
+{
+  "name": "micro-cache",
+  "version": "0.0.0",
+  "description": "a simple caching server",
+  "scripts": {
+    "start": "rapptor"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/firstandthird/micro-cache.git"
+  },
+  "keywords": [],
+  "author": "First+Third",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/firstandthird/micro-cache/issues"
+  },
+  "homepage": "https://github.com/firstandthird/micro-cache#readme",
+  "dependencies": {
+    "hapi-auto-handler": "^1.5.1",
+    "ioredis": "^3.1.4",
+    "rapptor": "^2.5.1"
+  },
+  "devDependencies": {
+    "eslint": "3.15.0",
+    "eslint-config-firstandthird": "3.2.0",
+    "eslint-plugin-import": "2.2.0"
+  },
+  "eslintConfig": {
+    "extends": "firstandthird"
+  }
+}

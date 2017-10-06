@@ -1,0 +1,3 @@
+plugins:
+  hapi-auto-handler:
+    _priority: -5
