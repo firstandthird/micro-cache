@@ -5,7 +5,7 @@ redis:
   host: '{{ENV.REDIS_HOST}}'
   port: '{{ENV.REDIS_PORT}}'
   password: '{{ENV.REDIS_PASSWORD}}'
-  prefix: 'prefix'
+  prefix: '{{ENV.REDIS_PREFIX}}'
 plugins:
   hapi-auto-handler:
     _priority: -5
