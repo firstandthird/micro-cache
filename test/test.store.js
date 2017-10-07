@@ -3,7 +3,13 @@ const async = require('async');
 const Rapptor = require('rapptor');
 
 let server;
-tap.beforeEach((allDone) => {
+tap.afterEach((done) => {
+  server.stop(() => {
+    done();
+  });
+});
+
+tap.test('store plugin calls redis server', (t) => {
   async.autoInject({
     rapptor(done) {
       const rapptor = new Rapptor({ env: 'test' });
@@ -11,33 +17,20 @@ tap.beforeEach((allDone) => {
     },
     setup(rapptor, done) {
       server = rapptor[0];
-      server.route({
-        method: 'get',
-        path: '/test/http',
-        handler(request, reply) {
-          reply({ statusCode: 200, headers: request.headers }).code(200);
-        }
-      });
-      return done(null, rapptor[0]);
+      return done(null, server);
     },
-  }, allDone);
-});
-
-tap.afterEach((done) => {
-  server.stop(() => {
-    done();
+    verify(setup, done) {
+      t.equal(typeof server.set, 'function', 'store.set is registered');
+      t.equal(typeof server.get, 'function', 'store.get is registered');
+      // server.set('key', 'value');
+      // console.log('get')
+      // server.get('key', (err, result) => {
+      //   console.log(err)
+      //   console.log(result)
+      //   t.equal(err, null, 'does not error on fetch');
+      //   t.equal(result, 'value', 'can set/get values from store');
+      //   t.end();
+      // });
+    }
   });
-});
-
-tap.test('schedules network http', { timeout: 6000 }, (t) => {
-  let called = false;
-  t.end();
-  // server.methods.report = (data, result) => {
-  //   if (data.name === 'http1' && !called) {
-  //     called = true;
-  //     server.methods.methodScheduler.stopSchedule('http1');
-  //     t.equal(result.up, true);
-  //     t.end();
-  //   }
-  // };
 });
