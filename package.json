@@ -20,7 +20,8 @@
   "dependencies": {
     "hapi-auto-handler": "^1.5.1",
     "ioredis": "^3.1.4",
-    "rapptor": "^2.5.1"
+    "rapptor": "^2.5.1",
+    "wreck": "^13.0.3"
   },
   "devDependencies": {
     "eslint": "3.15.0",
