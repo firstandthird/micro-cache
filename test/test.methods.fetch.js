@@ -5,17 +5,12 @@ const Hapi = require('hapi');
 // concat origin (from settings) and path and then make that request using wreck
 
 let server;
-tap.afterEach((done) => {
-  server.stop(() => {
-    done();
-  });
-});
 
 tap.test('methods.fetch', (t) => {
   const urlPath = '/url';
   async.autoInject({
     rapptor(done) {
-      const rapptor = new Rapptor({ env: 'test' });
+      const rapptor = new Rapptor({});
       rapptor.start(done);
     },
     setup(rapptor, done) {
@@ -72,7 +67,6 @@ tap.test('methods.fetch', (t) => {
       server.methods.fetch('delete', urlPath, done);
     },
     verify(get, post, put, httpDelete, done) {
-      console.log(get)
       t.equal(get.success, true, 'http GET works');
       t.equal(post.success, true, 'http POST works');
       t.equal(put.success, true, 'http PUT works');
@@ -80,9 +74,12 @@ tap.test('methods.fetch', (t) => {
       done();
     },
   }, (err, result) => {
-    t.equal(err, null);
+    t.equal(!err, true, 'does not error');
     result.testServer.stop(() => {
-      t.end();
+      server.stop(() => {
+        t.end();
+        process.exit();
+      });
     });
   });
 });
