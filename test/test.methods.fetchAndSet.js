@@ -40,7 +40,10 @@ tap.test('methods.fetchAndSet', (t) => {
     },
   }, (err, result) => {
     t.equal(err, null);
-    t.end();
-    process.exit();
+    server.stop(() => {
+      result.testServer.stop(() => {
+        t.end();
+      });
+    });
   });
 });
