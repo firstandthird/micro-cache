@@ -3,8 +3,7 @@
   "version": "0.0.0",
   "description": "a simple caching server",
   "scripts": {
-    "start": "rapptor",
-    "test": "tap test/test.*.js"
+    "start": "rapptor"
   },
   "repository": {
     "type": "git",
