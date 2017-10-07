@@ -10,7 +10,7 @@ tap.afterEach((done) => {
   });
 });
 
-tap.test('methods.fetch', (t) => {
+tap.test('methods.fetchAndSet', (t) => {
   const urlPath = '/url';
   async.autoInject({
     rapptor(done) {
