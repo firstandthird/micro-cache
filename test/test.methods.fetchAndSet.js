@@ -4,11 +4,6 @@ const Rapptor = require('rapptor');
 const Hapi = require('hapi');
 
 let server;
-tap.afterEach((done) => {
-  server.stop(() => {
-    done();
-  });
-});
 
 tap.test('methods.fetchAndSet', (t) => {
   const urlPath = '/url';
@@ -34,22 +29,18 @@ tap.test('methods.fetchAndSet', (t) => {
         method: 'get',
         path: '/url',
         handler(request, reply) {
-          console.log('called')
-          reply(null, {});
+          reply(null, { success: true });
         }
       });
+      server.set = (key, value) => {
+        t.equal(key, 'key', 'sets key correctly');
+        t.equal(value.success, true, 'sets value correctly');
+      };
       server.methods.fetchAndSet(urlPath, 'key', done);
-    },
-    retrieve(get, done) {
-      console.log('get')
-      return done(null, server.get('key'));
-    },
-    verify(get, retrieve, done) {
-      t.equal(get, retrieve, 'stores the same object it got back');
-      done();
     },
   }, (err, result) => {
     t.equal(err, null);
-    result.testServer.stop(t.end);
+    t.end();
+    process.exit();
   });
 });
