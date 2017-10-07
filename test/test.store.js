@@ -3,13 +3,8 @@ const async = require('async');
 const Rapptor = require('rapptor');
 
 let server;
-tap.afterEach((done) => {
-  server.stop(() => {
-    done();
-  });
-});
 
-tap.test('store plugin calls redis server', (t) => {
+tap.test('plugin store', (t) => {
   async.autoInject({
     rapptor(done) {
       const rapptor = new Rapptor({ env: 'test' });
@@ -22,7 +17,12 @@ tap.test('store plugin calls redis server', (t) => {
     verify(setup, done) {
       t.equal(typeof server.set, 'function', 'store.set is registered');
       t.equal(typeof server.get, 'function', 'store.get is registered');
-      // server.set('key', 'value');
+      console.log('43')
+      console.log('43')
+      console.log('43')
+      console.log('43')
+      server.set('key', 'value');
+      done();
       // console.log('get')
       // server.get('key', (err, result) => {
       //   console.log(err)
@@ -32,5 +32,10 @@ tap.test('store plugin calls redis server', (t) => {
       //   t.end();
       // });
     }
+  }, (err, result) => {
+    result.setup.stop(() => {
+      t.end();
+      process.exit();
+    });
   });
 });
