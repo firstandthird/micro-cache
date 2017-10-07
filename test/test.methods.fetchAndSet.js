@@ -34,7 +34,7 @@ tap.test('methods.fetchAndSet', (t) => {
       });
       server.set = (key, value) => {
         t.equal(key, 'key', 'sets key correctly');
-        t.equal(value.success, true, 'sets value correctly');
+        t.equal(value.success, true, 'sets value with result of HTTP GET');
       };
       server.methods.fetchAndSet(urlPath, 'key', done);
     },
