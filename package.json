@@ -25,8 +25,7 @@
   "devDependencies": {
     "eslint": "3.15.0",
     "eslint-config-firstandthird": "3.2.0",
-    "eslint-plugin-import": "2.2.0",
-    "tap": "^10.7.2"
+    "eslint-plugin-import": "2.2.0"
   },
   "eslintConfig": {
     "extends": "firstandthird"
