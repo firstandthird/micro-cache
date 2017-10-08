@@ -75,10 +75,9 @@ tap.test('methods.fetch', (t) => {
     },
   }, (err, result) => {
     t.equal(!err, true, 'does not error');
-    result.testServer.stop(() => {
-      server.stop(() => {
+    server.stop(() => {
+      result.testServer.stop(() => {
         t.end();
-        process.exit();
       });
     });
   });
