@@ -32,9 +32,11 @@ tap.test('methods.fetchAndSet', (t) => {
           reply(null, { success: true });
         }
       });
-      server.set = (key, value) => {
-        t.equal(key, 'key', 'sets key correctly');
-        t.equal(value.success, true, 'sets value with result of HTTP GET');
+      server.store = {
+        set(key, value) {
+          t.equal(key, 'key', 'sets key correctly');
+          t.equal(value.success, true, 'sets value with result of HTTP GET');
+        }
       };
       server.methods.fetchAndSet(urlPath, 'key', done);
     },
