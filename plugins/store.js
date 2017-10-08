@@ -3,9 +3,24 @@ const Redis = require('ioredis');
 exports.register = function(server, options, next) {
   const settings = server.settings.app;
   let cache = settings.cache;
-  if (settings.redis.host) {
-    cache = new Redis(settings.redis);
+  // use internal cache if no host given:
+  if (!settings.redis.host) {
+    server.decorate('server', 'store', {
+      get: cache.get,
+      set: (key, value) => cache.set(key, value, null, (err) => {
+        server.log(err);
+      }),
+      scan: (expression, done) => {
+        // todo: how to get keys from catbox?
+        done();
+      },
+      flush: () => {
+        cache = server.cache({ expiresIn: 60 * 60 * 1000 });
+      }
+    });
+    return next();
   }
+  cache = new Redis(settings.redis);
   function scan(expression, done) {
     const stream = cache.scanStream({ match: expression });
     const keys = [];
