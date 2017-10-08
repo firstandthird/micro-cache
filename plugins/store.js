@@ -7,8 +7,16 @@ exports.register = function(server, options, next) {
     cache = new Redis(settings.redis);
   }
   server.decorate('server', 'store', {
-    get: cache.get,
-    set: cache.set
+    get: cache.get.bind(cache),
+    set: cache.set.bind(cache)
+  });
+  let running = true;
+  // shut down the cache when server shuts down:
+  server.on('stop', () => {
+    if (running) {
+      cache.quit.bind(cache)();
+    }
+    running = false;
   });
   next();
 };
