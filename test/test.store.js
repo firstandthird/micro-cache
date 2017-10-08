@@ -20,10 +20,10 @@ tap.test('store plugin calls redis server', (t) => {
       return done(null, server);
     },
     verify(setup, done) {
-      t.equal(typeof server.set, 'function', 'store.set is registered');
-      t.equal(typeof server.get, 'function', 'store.get is registered');
-      server.set('key', 'value');
-      server.get('key', (err, result) => {
+      t.equal(typeof server.store.set, 'function', 'store.set is registered');
+      t.equal(typeof server.store.get, 'function', 'store.get is registered');
+      server.store.set('key', 'value');
+      server.store.get('key', (err, result) => {
         t.equal(err, null, 'does not error on fetch');
         t.equal(result, 'value', 'can set/get values from store');
       });
