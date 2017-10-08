@@ -6,8 +6,10 @@ exports.register = function(server, options, next) {
   if (settings.redis.host) {
     cache = new Redis(settings.redis);
   }
-  server.decorate('server', 'get', cache.get);
-  server.decorate('server', 'set', cache.set);
+  server.decorate('server', 'store', {
+    get: cache.get,
+    set: cache.set
+  });
   next();
 };
 
