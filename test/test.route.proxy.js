@@ -26,6 +26,7 @@ tap.test('route.proxy handles cache hit', (t) => {
       });
     },
     get(setup, testServer, done) {
+      server.method('fetchAndSet', (path, key, callback) => {}, {});
       server.store = {
         get: (key, callback) => {
           t.equal(key, 'prefix-/whatever', 'gets the correct cache key');
@@ -73,21 +74,15 @@ tap.test('route.proxy handles cache hit', (t) => {
       });
     },
     get(setup, testServer, done) {
-      testServer.route({
-        method: 'get',
-        path: '/whatever',
-        handler(request, reply) {
-          reply(null, 'origin');
-        }
-      });
+      server.methods.fetchAndSet = function(path, key, callback) {
+        t.equal(path, '/whatever', 'fetchAndSet gets correct path');
+        t.equal(key, 'prefix-/whatever', 'fetchAndSet gets correct cache key');
+        return callback(null, 'origin');
+      };
       server.store = {
         get(key, callback) {
           t.equal(key, 'prefix-/whatever', 'gets the correct cache key');
           return callback();
-        },
-        set(key, value) {
-          t.equal(key, 'prefix-/whatever', 'sets the correct cache key');
-          t.equal(value, 'origin', 'sets the origin value');
         }
       };
       server.inject({
@@ -97,7 +92,10 @@ tap.test('route.proxy handles cache hit', (t) => {
       });
     },
     verify(get, done) {
-      t.equal(get, 1234, 'http GET works');
+      console.log('=')
+      console.log('=')
+      console.log(get)
+      t.equal(get, 'origin', 'http GET works');
       done();
     },
   }, (err, result) => {
