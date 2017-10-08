@@ -9,8 +9,8 @@ exports.register = function(server, options, next) {
   server.decorate('server', 'store', {
     get: cache.get,
     set: cache.set,
-    scan(url, done) {
-      const stream = cache.scanStream({ match: url });
+    scan(expression, done) {
+      const stream = cache.scanStream({ match: expression });
       const keys = [];
       stream.on('data', (resultKeys) => {
         // `resultKeys` is an array of strings representing key names

@@ -47,7 +47,7 @@ tap.test('store plugin can scan for matching keys', (t) => {
       return done(null, server);
     },
     scan1(setup, done) {
-      t.equal(typeof server.scan, 'function', 'store.scan is registered');
+      t.equal(typeof server.store.scan, 'function', 'store.scan is registered');
       server.methods.getKeys('key', done);
     },
     verify1(scan1, done) {
@@ -55,13 +55,13 @@ tap.test('store plugin can scan for matching keys', (t) => {
       done();
     },
     scan2(setup, done) {
-      server.set('key1', 'value1');
-      server.set('key2', 'value2');
-      server.set('key3', 'value3');
+      server.store.set('key1', 'value1');
+      server.store.set('key2', 'value2');
+      server.store.set('key3', 'value3');
       server.methods.getKeys('key*', done);
     },
     verify2(scan2, done) {
-      t.equal(scan2.length, 1);
+      t.equal(scan2.length, 3);
       done();
     }
   }, (err) => {
