@@ -53,7 +53,7 @@ tap.test('route.proxy handles cache hit', (t) => {
   });
 });
 
-tap.test('route.proxy handles cache hit', (t) => {
+tap.test('route.proxy handles cache miss', (t) => {
   const urlPath = '/url';
   async.autoInject({
     rapptor(done) {
@@ -80,6 +80,10 @@ tap.test('route.proxy handles cache hit', (t) => {
         return callback(null, 'origin');
       };
       server.store = {
+        set(key, value) {
+          t.equal(key, 'prefix-/whatever', 'fetchAndSet gets correct cache key');
+          t.equal(value, 'origin', 'fetchAndSet gets correct cache value');
+        },
         get(key, callback) {
           t.equal(key, 'prefix-/whatever', 'gets the correct cache key');
           return callback();
@@ -92,9 +96,6 @@ tap.test('route.proxy handles cache hit', (t) => {
       });
     },
     verify(get, done) {
-      console.log('=')
-      console.log('=')
-      console.log(get)
       t.equal(get, 'origin', 'http GET works');
       done();
     },

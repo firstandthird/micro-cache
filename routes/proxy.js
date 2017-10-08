@@ -9,7 +9,7 @@ module.exports.proxy = {
       if (err) {
         return reply(err);
       }
-      if (!cachedValue) {
+      if (cachedValue) {
         server.log(['micro-cache'], `key ${cacheKey} cache hit`);
         return reply(null, cachedValue);
       }
