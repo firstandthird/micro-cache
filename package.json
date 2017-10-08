@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "description": "a simple caching server",
   "scripts": {
-    "start": "rapptor"
+    "start": "rapptor",
+    "test": "tap test/test.*.js"
   },
   "repository": {
     "type": "git",
@@ -19,12 +20,14 @@
   "dependencies": {
     "hapi-auto-handler": "^1.5.1",
     "ioredis": "^3.1.4",
-    "rapptor": "^2.5.1"
+    "rapptor": "^2.5.1",
+    "wreck": "^13.0.3"
   },
   "devDependencies": {
     "eslint": "3.15.0",
     "eslint-config-firstandthird": "3.2.0",
-    "eslint-plugin-import": "2.2.0"
+    "eslint-plugin-import": "2.2.0",
+    "tap": "^10.7.2"
   },
   "eslintConfig": {
     "extends": "firstandthird"
