@@ -102,6 +102,30 @@ tap.test('store plugin works with internal cache too', (t) => {
         t.equal(result, 'value', 'can set/get values from store');
         done();
       });
+    },
+    scan1(setup, done) {
+      server.store.set('key', 'value');
+      t.equal(typeof server.store.scan, 'function', 'store.scan is registered');
+      server.methods.getKeys('key', done);
+    },
+    verify1(scan1, done) {
+      t.equal(scan1.length, 1, 'if no wildcard, scan only returns exact matching key');
+      t.equal(scan1[0], 'key', 'if no wildcard, scan only returns exact matching key');
+      done();
+    },
+    scan2(setup, done) {
+      server.store.set('key1', 'value1');
+      server.store.set('key2', 'value2');
+      server.store.set('key3', 'value3');
+      server.store.set('doesNotMatch', 'no');
+      server.methods.getKeys('key*', done);
+    },
+    verify2(scan2, done) {
+      t.equal(scan2.indexOf('doesNotMatch'), -1, 'does not return keys that do not match');
+      t.notEqual(scan2.indexOf('key1'), -1, 'returns list including key1');
+      t.notEqual(scan2.indexOf('key2'), -1, 'returns list including key2');
+      t.notEqual(scan2.indexOf('key3'), -1, 'returns list including key3');
+      done();
     }
   }, (err) => {
     t.equal(err, null);

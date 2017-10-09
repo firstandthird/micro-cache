@@ -6,17 +6,21 @@ exports.register = function(server, options, next) {
   // use internal cache if no host given:
   if (!settings.redis.host) {
     server.decorate('server', 'store', {
-      get: cache.get,
-      set: (key, value) => cache.set(key, value, null, (err) => {
-        server.log(err);
-      }),
+      get: (key, done) => done(null, cache[key]),
+      set: (key, value) => { cache[key] = value; },
       scan: (expression, done) => {
-        // todo: how to get keys from catbox?
-        done();
+        const compareFixed = (key, item) => item === key;
+        const compareWild = (key, item) => item.startsWith(key.replace('*', ''));
+        const compare = expression.endsWith('*') ? compareWild : compareFixed;
+        const matches = Object.keys(cache).reduce((list, item) => {
+          if (compare(expression, item)) {
+            list.push(item);
+          }
+          return list;
+        }, []);
+        done(null, matches);
       },
-      flush: () => {
-        cache = server.cache({ expiresIn: 60 * 60 * 1000 });
-      }
+      flush() { cache = {}; }
     });
     return next();
   }
