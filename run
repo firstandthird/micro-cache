@@ -8,8 +8,4 @@ if [[ -z "$CMD" ]]; then
   exit
 fi
 
-if [[ "$CMD" == "mongo" ]]; then
-  docker-compose exec db mongo
-  exit
-fi
 docker-compose $@
