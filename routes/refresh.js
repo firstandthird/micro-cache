@@ -4,7 +4,7 @@ const async = require('async');
 
 module.exports.refresh = {
   method: 'POST',
-  url: '/_refresh',
+  path: '/_refresh',
   config: {
     validate: {
       payload: {
@@ -18,7 +18,9 @@ module.exports.refresh = {
     if (request.payload.secret !== server.settings.app.secret) {
       return reply(boom.unauthorized);
     }
+    // reply without delay:
     reply(null, { accepted: true });
+    // refresh each method:
     async.each(request.payload.urls, (url, eachDone) => {
       server.methods.getKeys(url, (err, urlList) => {
         if (err) {
