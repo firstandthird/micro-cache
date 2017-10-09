@@ -59,10 +59,17 @@ tap.test('store plugin can scan for matching keys', (t) => {
       t.equal(scan1[0], 'key', 'if no wildcard, scan only returns exact matching key');
       done();
     },
-    scan2(setup, done) {
-      server.store.set('key1', 'value1');
-      server.store.set('key2', 'value2');
-      server.store.set('key3', 'value3');
+    set1(setup, done) {
+      server.store.set('key1', 'value1', done);
+    },
+    set2(setup, done) {
+      server.store.set('key2', 'value2', done);
+    },
+    set3(setup, done) {
+      server.store.set('key3', 'value3', done);
+    },
+    scan2(set1, set2, set3, setup, done) {
+      // set also works when used synchronously:
       server.store.set('doesNotMatch', 'no');
       server.methods.getKeys('key*', done);
     },
@@ -113,10 +120,17 @@ tap.test('store plugin works with internal cache too', (t) => {
       t.equal(scan1[0], 'key', 'if no wildcard, scan only returns exact matching key');
       done();
     },
-    scan2(setup, done) {
-      server.store.set('key1', 'value1');
-      server.store.set('key2', 'value2');
-      server.store.set('key3', 'value3');
+    set1(setup, done) {
+      server.store.set('key1', 'value1', done);
+    },
+    set2(setup, done) {
+      server.store.set('key2', 'value2', done);
+    },
+    set3(setup, done) {
+      server.store.set('key3', 'value3', done);
+    },
+    scan2(set1, set2, set3, setup, done) {
+      // set also works when used synchronously:
       server.store.set('doesNotMatch', 'no');
       server.methods.getKeys('key*', done);
     },

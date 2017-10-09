@@ -7,7 +7,12 @@ exports.register = function(server, options, next) {
   if (!settings.redis.host) {
     server.decorate('server', 'store', {
       get: (key, done) => done(null, cache[key]),
-      set: (key, value) => { cache[key] = value; },
+      set: (key, value, done) => {
+        cache[key] = value;
+        if (typeof done === 'function') {
+          return done();
+        }
+      },
       scan: (expression, done) => {
         const compareFixed = (key, item) => item === key;
         const compareWild = (key, item) => item.startsWith(key.replace('*', ''));
