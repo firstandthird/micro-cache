@@ -7,11 +7,8 @@ exports.register = function(server, options, next) {
   if (!settings.redis.host) {
     server.decorate('server', 'store', {
       get: (key, done) => done(null, cache[key]),
-      set: (key, value, done) => {
+      set: (key, value) => {
         cache[key] = value;
-        if (typeof done === 'function') {
-          return done();
-        }
       },
       scan: (expression, done) => {
         const compareFixed = (key, item) => item === key;
