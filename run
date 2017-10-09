@@ -1,0 +1,15 @@
+#!/bin/bash
+
+
+CMD=$1
+
+if [[ -z "$CMD" ]]; then
+  docker-compose up --build
+  exit
+fi
+
+if [[ "$CMD" == "mongo" ]]; then
+  docker-compose exec db mongo
+  exit
+fi
+docker-compose $@
