@@ -1,5 +1,5 @@
 microcache:
-  image: 'firstandthird/node:8.2.1-dev'
+  image: 'firstandthird/node:8.6-dev'
   ports:
     - 8080
   volumes:
