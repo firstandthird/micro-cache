@@ -1,11 +1,10 @@
-verbose: true
-origin: '{{ENV.CACHE_ORIGIN}}'
-secret: '{{ENV.CACHE_SECRET}}'
+origin: '{{ENV.ORIGIN}}'
+secret: '{{ENV.SECRET}}'
 redis:
   host: '{{ENV.REDIS_HOST}}'
-  port: '{{ENV.REDIS_PORT}}'
+  port: '{{ENV.REDIS_PORT || 6379}}'
   password: '{{ENV.REDIS_PASSWORD}}'
-  prefix: '{{ENV.REDIS_PREFIX}}'
+  prefix: '{{ENV.REDIS_PREFIX || "micro-cache"}}'
 plugins:
   hapi-auto-handler:
     _priority: -5
