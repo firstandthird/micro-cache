@@ -1,1 +1,1 @@
-FROM firstandthird/node:8.6-dev
+FROM firstandthird/node:8.6-onbuild
