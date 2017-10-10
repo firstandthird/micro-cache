@@ -1,4 +1,3 @@
-verbose: true
 origin: '{{ENV.ORIGIN}}'
 secret: '{{ENV.SECRET}}'
 redis:
