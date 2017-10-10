@@ -41,8 +41,24 @@ exports.register = function(server, options, next) {
   }
 
   server.decorate('server', 'store', {
-    get: cache.get.bind(cache),
-    set: cache.set.bind(cache),
+    get: (key, done) => {
+      cache.get.bind(cache)(key, (err, store) => {
+        if (err) {
+          return done(err);
+        }
+        // try to parse as json, return as string otherwise:
+        try {
+          const value = JSON.parse(store);
+          return done(null, value);
+        } catch (e) {
+          return done(null, store.toString());
+        }
+      });
+    },
+    set: (key, value) => {
+      const store = typeof value === 'object' ? JSON.stringify(value) : value.toString();
+      cache.set.bind(cache)(key, store);
+    },
     scan: scan.bind(cache),
     flush: cache.flushall.bind(cache) // used for unit tests
   });

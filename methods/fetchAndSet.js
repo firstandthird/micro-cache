@@ -5,8 +5,7 @@ module.exports = function(path, key, allDone) {
     if (err) {
       return allDone(err);
     }
-    const store = typeof result === 'object' ? JSON.stringify(result) : result.toString();
-    server.store.set(key, store);
+    server.store.set(key, result);
     return allDone(null, result);
   });
 };
