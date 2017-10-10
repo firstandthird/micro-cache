@@ -2,7 +2,7 @@ const Redis = require('ioredis');
 
 exports.register = function(server, options, next) {
   const settings = server.settings.app;
-  let cache = settings.cache;
+  let cache = settings.cache || {};
   // use internal cache if no host given:
   if (!settings.redis.host) {
     server.decorate('server', 'store', {
