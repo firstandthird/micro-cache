@@ -1,0 +1,20 @@
+microcache:
+  image: 'firstandthird/node:8.6-dev'
+  ports:
+    - 8080
+  volumes:
+    - '.:/home/app/src'
+  links:
+    - 'redis:redis'
+  environment:
+    CACHE_ORIGIN:
+    CACHE_SECRET: 'secret'
+    REDIS_HOST: 'redis'
+    REDIS_PORT: 6379
+    REDIS_PASSWORD: 'redis_password'
+    REDIS_PREFIX:
+redis:
+  image: redis:alpine
+  command: redis-server --requirepass redis_password
+  container_name: redis
+  ports: ["6379"]
