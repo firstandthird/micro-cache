@@ -27,7 +27,7 @@ tap.test('route.proxy handles cache hit', (t) => {
     get(setup, testServer, done) {
       server.store = {
         get: (key, callback) => {
-          t.equal(key, 'prefix-/whatever-', 'gets the correct cache key');
+          t.equal(key, 'prefix-/whatever', 'gets the correct cache key');
           return callback(null, 1234);
         }
       };
@@ -73,16 +73,16 @@ tap.test('route.proxy handles cache miss', (t) => {
     get(setup, testServer, done) {
       server.methods.fetchAndSet = function(path, key, callback) {
         t.equal(path, '/whatever', 'fetchAndSet gets correct path');
-        t.equal(key, 'prefix-/whatever-', 'fetchAndSet gets correct cache key');
+        t.equal(key, 'prefix-/whatever', 'fetchAndSet gets correct cache key');
         return callback(null, 'origin');
       };
       server.store = {
         set(key, value) {
-          t.equal(key, 'prefix-/whatever-', 'fetchAndSet gets correct cache key');
+          t.equal(key, 'prefix-/whatever', 'fetchAndSet gets correct cache key');
           t.equal(value, 'origin', 'fetchAndSet gets correct cache value');
         },
         get(key, callback) {
-          t.equal(key, 'prefix-/whatever-', 'gets the correct cache key');
+          t.equal(key, 'prefix-/whatever', 'gets the correct cache key');
           return callback();
         }
       };
