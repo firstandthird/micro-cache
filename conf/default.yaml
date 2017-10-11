@@ -9,3 +9,5 @@ plugins:
   hapi-auto-handler:
     _priority: -5
   './plugins/store':
+  hapi-logr:
+    requests: '{{ENV.ACCESS_LOGS || false}}'
