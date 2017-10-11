@@ -48,7 +48,7 @@ tap.test('routes.refresh', (t) => {
         url: '/_refresh',
         payload: {
           secret: 'secret',
-          urls: [`${prefix}-/key*`]
+          urls: ['/key*']
         },
       }, (response) => {
         t.equal(response.statusCode, 200, 'returns 200 OK');
