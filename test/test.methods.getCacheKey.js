@@ -27,6 +27,9 @@ tap.test('methods.getCacheKey', (t) => {
       t.equal(key2A, key2B);
       t.notEqual(key1A, key1C);
       t.notEqual(key1A, key2A);
+      t.notEqual(key1A.indexOf('/blah?sort=name&token=123', -1));
+      t.notEqual(key1C.indexOf('/blah?sort=name&token=124', -1));
+      t.notEqual(key2A.indexOf('/blah1/blah2?clock=1&sort=name&token=123', -1));
       done();
     }
   }, () => {
