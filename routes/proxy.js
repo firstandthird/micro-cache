@@ -3,8 +3,7 @@ module.exports.proxy = {
   path: '/{path*}',
   handler(request, reply) {
     const server = request.server;
-    const requestedUrl = request.url.path;
-    const cacheKey = server.methods.getCacheKey(requestedUrl);
+    const cacheKey = server.methods.getCacheKey(request.url.pathname, request.query);
     server.store.get(cacheKey, (err, cachedValue) => {
       if (err) {
         return reply(err);
