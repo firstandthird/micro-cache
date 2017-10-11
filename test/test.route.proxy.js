@@ -6,7 +6,6 @@ const Hapi = require('hapi');
 let server;
 
 tap.test('route.proxy handles cache hit', (t) => {
-  const urlPath = '/url';
   async.autoInject({
     rapptor(done) {
       const rapptor = new Rapptor({});
@@ -26,7 +25,6 @@ tap.test('route.proxy handles cache hit', (t) => {
       });
     },
     get(setup, testServer, done) {
-      server.method.fetchAndSet = (path, key, callback) => {};
       server.store = {
         get: (key, callback) => {
           t.equal(key, 'prefix-/whatever-', 'gets the correct cache key');
@@ -54,7 +52,6 @@ tap.test('route.proxy handles cache hit', (t) => {
 });
 
 tap.test('route.proxy handles cache miss', (t) => {
-  const urlPath = '/url';
   async.autoInject({
     rapptor(done) {
       const rapptor = new Rapptor({});

@@ -18,11 +18,11 @@ tap.test('methods.getCacheKey', (t) => {
       return done(null, server);
     },
     cacheKey(setup, done) {
-      const key1A = server.methods.getCacheKey('/blah?token=123&sort=name');
-      const key1B = server.methods.getCacheKey('/blah?sort=name&token=123');
-      const key1C = server.methods.getCacheKey('/blah?sort=name&token=124');
-      const key2A = server.methods.getCacheKey('/blah1/blah2?sort=name&token=123&clock=1');
-      const key2B = server.methods.getCacheKey('/blah1/blah2?token=123&sort=name&clock=1');
+      const key1A = server.methods.getCacheKey('/blah', 'token=123&sort=name');
+      const key1B = server.methods.getCacheKey('/blah', 'sort=name&token=123');
+      const key1C = server.methods.getCacheKey('/blah', 'sort=name&token=124');
+      const key2A = server.methods.getCacheKey('/blah1/blah2', 'sort=name&token=123&clock=1');
+      const key2B = server.methods.getCacheKey('/blah1/blah2', 'token=123&sort=name&clock=1');
       t.equal(key1A, key1B);
       t.equal(key2A, key2B);
       t.notEqual(key1A, key1C);

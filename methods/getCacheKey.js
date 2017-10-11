@@ -1,16 +1,15 @@
 const url = require('url');
 const qp = require('query-parse');
 
-module.exports = function(path) {
-  const tokens = path.split('?');
+module.exports = function(path, query) {
   if (path.length === 1) {
     return `${this.settings.app.redis.prefix}-${path}`;
   }
-  const queryObject = qp.toObject(tokens[1]);
+  const queryObject = qp.toObject(query);
   let querystring = '';
   const keys = Object.keys(queryObject).sort();
   keys.forEach((key) => {
-    querystring += `${key}:${queryObject[key]}`;
+    querystring = `${querystring}${key}:${queryObject[key]}`;
   });
-  return `${this.settings.app.redis.prefix}-${tokens[0]}-${querystring}`;
+  return `${this.settings.app.redis.prefix}-${path}-${querystring}`;
 };
