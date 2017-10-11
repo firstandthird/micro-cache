@@ -6,8 +6,6 @@ const Hapi = require('hapi');
 let server;
 
 tap.test('routes.refresh', (t) => {
-  const keysSeen = [];
-  const pathsSeen = [];
   process.env.CACHE_SECRET = 'secret';
   async.autoInject({
     rapptor(done) {
@@ -27,37 +25,55 @@ tap.test('routes.refresh', (t) => {
         done(null, testServer);
       });
     },
-    get(setup, testServer, done) {
-      server.methods.getKeys = (url, callback) => {
-        callback(null, ['key1', 'key2']);
-      };
-      server.methods.fetchAndSet = (path, key, callback) => {
-        keysSeen.push(key);
-        pathsSeen.push(path);
-        callback();
-      };
+    flush(testServer, done) {
+      server.store.flush();
+      let count = 0;
+      testServer.route({
+        method: 'get',
+        path: '/{key}',
+        handler(request, reply) {
+          count++;
+          return reply(null, count);
+        }
+      });
+      done();
+    },
+    inject(flush, setup, testServer, done) {
+      const prefix = server.settings.app.redis.prefix;
+      server.store.set(`${prefix}-/key1`, 'value1');
+      server.store.set(`${prefix}-/key2`, 'value2');
+      server.store.set(`${prefix}-/doesNotMatch`, 'value1');
       server.inject({
         method: 'POST',
         url: '/_refresh',
         payload: {
           secret: 'secret',
-          urls: ['/url']
+          urls: [`${prefix}-/key*`]
         },
       }, (response) => {
         t.equal(response.statusCode, 200, 'returns 200 OK');
         done();
       });
     },
-    wait(get, done) {
+    wait(inject, done) {
       setTimeout(done, 2000);
     },
-    verify(wait, get, done) {
-      t.equal(keysSeen.length, 2, 'fetches/sets all keys');
-      t.equal(pathsSeen.length, 2, 'fetches/sets all paths');
-      t.equal(keysSeen[0], 'prefix-key1', 'sets the key correctly');
-      t.equal(keysSeen[1], 'prefix-key2', 'sets the key correctly');
-      t.equal(pathsSeen[0], 'key1', 'sets the value correctly');
-      t.equal(pathsSeen[1], 'key2', 'sets the value correctly');
+    get1(wait, done) {
+      const prefix = server.settings.app.redis.prefix;
+      server.store.get(`${prefix}-/key1`, done);
+    },
+    get2(wait, done) {
+      const prefix = server.settings.app.redis.prefix;
+      server.store.get(`${prefix}-/key2`, done);
+    },
+    get3(wait, done) {
+      const prefix = server.settings.app.redis.prefix;
+      server.store.get(`${prefix}-/doesNotMatch`, done);
+    },
+    verify(wait, inject, get1, get2, get3, done) {
+      t.equal(get1, 1, 'updates matching cached value');
+      t.equal(get2, 2, 'updates matching cached value');
+      t.equal(get3, 'value1', 'does not update non-matching cached value');
       done();
     },
   }, (err, result) => {

@@ -20,15 +20,17 @@ module.exports.refresh = {
     }
     // reply without delay:
     reply(null, { accepted: true });
-    // refresh each method:
+    // refresh each url:
     async.each(request.payload.urls, (url, eachDone) => {
       server.methods.getKeys(url, (err, urlList) => {
         if (err) {
           server.log(err);
         }
-        urlList.forEach((path) => {
-          const key = server.methods.getCacheKey(path);
-          server.methods.fetchAndSet(path, key, (fetchErr, result) => {
+        urlList.forEach((retrievedKey) => {
+          const prefix = server.settings.app.redis.prefix;
+          const urlToCall = retrievedKey.replace(`${prefix}-`, '');
+          server.log(['micro-cache'], { message: 'refreshing key', key: retrievedKey, url: urlToCall });
+          server.methods.fetchAndSet(urlToCall, retrievedKey, (fetchErr, result) => {
             if (fetchErr) {
               server.log(fetchErr);
             }
