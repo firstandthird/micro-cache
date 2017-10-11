@@ -10,4 +10,4 @@ plugins:
     _priority: -5
   './plugins/store':
   hapi-logr:
-    requests: '{{ENV.ACCESS_LOGS || false}}'
+    requests: '{{!!ENV.ACCESS_LOGS || false}}'
