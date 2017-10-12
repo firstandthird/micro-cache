@@ -20,10 +20,11 @@ tap.test('methods.getCacheKey can use HEADERS', (t) => {
     },
     cacheKey(setup, done) {
       const key1A = server.methods.getCacheKey({
-        url: { path: '/blah' },
+        url: { pathname: '/blah' },
+        query: { d: 2, a: 1 },
         headers: { 'x-api-key': 1234, 'x-csrf-token': 'token' }
       });
-      t.equal(key1A, 'prefix-{"path":"/blah","headers":{"x-api-key":1234,"x-csrf-token":"token"}}');
+      t.equal(key1A, 'prefix-{"path":"/blah?a=1&d=2","headers":{"x-api-key":1234,"x-csrf-token":"token"}}');
       done();
     }
   }, () => {
