@@ -1,3 +1,4 @@
+headers: '{{ENV.HEADERS}}'
 origin: '{{ENV.ORIGIN}}'
 secret: '{{ENV.SECRET}}'
 redis:
