@@ -142,3 +142,69 @@ tap.test('store plugin works with internal cache too', (t) => {
     });
   });
 });
+
+tap.test('store plugin can scan for wildcards at any position', (t) => {
+  async.autoInject({
+    rapptor(done) {
+      const rapptor = new Rapptor({ env: 'test' });
+      rapptor.start(done);
+    },
+    setup(rapptor, done) {
+      server = rapptor[0];
+      server.store.flush();
+      return done(null, server);
+    },
+    scan1(setup, done) {
+      server.store.set('key1', 'value1');
+      server.store.set('key2', 'value2');
+      server.store.set('key3', 'value3');
+      server.store.set('doesNotMatch', 'no');
+      server.methods.getKeys('*ey*', done);
+    },
+    verify2(scan1, done) {
+      t.equal(scan1.indexOf('doesNotMatch'), -1, 'does not return keys that do not match');
+      t.notEqual(scan1.indexOf('key1'), -1, 'returns list including key1');
+      t.notEqual(scan1.indexOf('key2'), -1, 'returns list including key2');
+      t.notEqual(scan1.indexOf('key3'), -1, 'returns list including key3');
+      done();
+    }
+  }, (err) => {
+    t.equal(err, null);
+    server.stop(() => {
+      t.end();
+    });
+  });
+});
+
+tap.test('store plugin can scan for wildcards at any position in internal store', (t) => {
+  async.autoInject({
+    rapptor(done) {
+      const rapptor = new Rapptor({ env: 'test' });
+      rapptor.start(done);
+    },
+    setup(rapptor, done) {
+      server = rapptor[0];
+      server.store.flush();
+      return done(null, server);
+    },
+    scan1(setup, done) {
+      server.store.set('key1', 'value1');
+      server.store.set('key2', 'value2');
+      server.store.set('key3', 'value3');
+      server.store.set('doesNotMatch', 'no');
+      server.methods.getKeys('*ey*', done);
+    },
+    verify2(scan1, done) {
+      t.equal(scan1.indexOf('doesNotMatch'), -1, 'does not return keys that do not match');
+      t.notEqual(scan1.indexOf('key1'), -1, 'returns list including key1');
+      t.notEqual(scan1.indexOf('key2'), -1, 'returns list including key2');
+      t.notEqual(scan1.indexOf('key3'), -1, 'returns list including key3');
+      done();
+    }
+  }, (err) => {
+    t.equal(err, null);
+    server.stop(() => {
+      t.end();
+    });
+  });
+});

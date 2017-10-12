@@ -20,6 +20,7 @@
   "dependencies": {
     "hapi-auto-handler": "^1.5.1",
     "ioredis": "^3.1.4",
+    "minimatch": "^3.0.4",
     "rapptor": "^2.5.1",
     "wreck": "^12.5.1"
   },

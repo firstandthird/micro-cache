@@ -1,6 +1,6 @@
 
 module.exports = function(url, done) {
-  if (url.endsWith('*')) {
+  if (url.indexOf('*') !== -1) {
     return this.store.scan(url, done);
   }
   // manually see if there's a matching key

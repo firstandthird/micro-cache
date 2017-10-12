@@ -1,4 +1,5 @@
 const Redis = require('ioredis');
+const minimatch = require('minimatch');
 
 exports.register = function(server, options, next) {
   const settings = server.settings.app;
@@ -11,11 +12,8 @@ exports.register = function(server, options, next) {
         cache[key] = value;
       },
       scan: (expression, done) => {
-        const compareFixed = (key, item) => item === key;
-        const compareWild = (key, item) => item.startsWith(key.replace('*', ''));
-        const compare = expression.endsWith('*') ? compareWild : compareFixed;
         const matches = Object.keys(cache).reduce((list, item) => {
-          if (compare(expression, item)) {
+          if (minimatch(item, expression)) {
             list.push(item);
           }
           return list;
