@@ -27,7 +27,7 @@ tap.test('route.proxy handles cache hit', (t) => {
     get(setup, testServer, done) {
       server.store = {
         get: (key, callback) => {
-          t.equal(key, 'prefix-/whatever', 'gets the correct cache key');
+          t.equal(key, 'prefix-{"path":"/whatever","headers":{}}', 'gets the correct cache key');
           return callback(null, 1234);
         }
       };
@@ -73,16 +73,16 @@ tap.test('route.proxy handles cache miss', (t) => {
     get(setup, testServer, done) {
       server.methods.fetchAndSet = function(path, key, callback) {
         t.equal(path, '/whatever', 'fetchAndSet gets correct path');
-        t.equal(key, 'prefix-/whatever', 'fetchAndSet gets correct cache key');
+        t.equal(key, 'prefix-{"path":"/whatever","headers":{}}', 'fetchAndSet gets correct cache key');
         return callback(null, 'origin');
       };
       server.store = {
         set(key, value) {
-          t.equal(key, 'prefix-/whatever', 'fetchAndSet gets correct cache key');
+          t.equal(key, 'prefix-{"path":"/whatever","headers":{}}', 'fetchAndSet gets correct cache key');
           t.equal(value, 'origin', 'fetchAndSet gets correct cache value');
         },
         get(key, callback) {
-          t.equal(key, 'prefix-/whatever', 'gets the correct cache key');
+          t.equal(key, 'prefix-{"path":"/whatever","headers":{}}', 'gets the correct cache key');
           return callback();
         }
       };
@@ -131,7 +131,7 @@ tap.test('route.proxy handles cache miss with HEADERS', (t) => {
         t.equal(path, '/whatever', 'fetchAndSet gets correct path');
         t.equal(key.startsWith('prefix-'), true, 'appends prefix to start of key');
         const obj = JSON.parse(key.replace('prefix-', ''));
-        t.equal(obj.url.startsWith('http://'), true, 'cache key contains url');
+        t.equal(obj.path, '/whatever', 'cache key contains url');
         t.equal(obj.headers['x-api-key'], 1234, ' cache key contains requested header fields');
         t.equal(obj.headers['x-csrf-token'], '54321', ' cache key contains requested header fields');
         return callback(null, 'origin');
@@ -140,7 +140,7 @@ tap.test('route.proxy handles cache miss with HEADERS', (t) => {
         set(key, value) {
           t.equal(key.startsWith('prefix-'), true, 'appends prefix to start of key');
           const obj = JSON.parse(key.replace('prefix-', ''));
-          t.equal(obj.url.startsWith('http://'), true, 'cache key contains url');
+          t.equal(obj.path, '/whatever', 'cache key contains url');
           t.equal(obj.headers['x-api-key'], 1234, ' cache key contains requested header fields');
           t.equal(obj.headers['x-csrf-token'], '54321', ' cache key contains requested header fields');
           t.equal(value, 'origin', 'fetchAndSet gets correct cache value');
@@ -148,7 +148,7 @@ tap.test('route.proxy handles cache miss with HEADERS', (t) => {
         get(key, callback) {
           t.equal(key.startsWith('prefix-'), true, 'appends prefix to start of key');
           const obj = JSON.parse(key.replace('prefix-', ''));
-          t.equal(obj.url.startsWith('http://'), true, 'cache key contains url');
+          t.equal(obj.path, '/whatever', 'cache key contains url');
           t.equal(obj.headers['x-api-key'], 1234, ' cache key contains requested header fields');
           t.equal(obj.headers['x-csrf-token'], '54321', ' cache key contains requested header fields');
           return callback();
@@ -203,7 +203,7 @@ tap.test('route.proxy handles cache hit with HEADERS', (t) => {
         get: (key, callback) => {
           t.equal(key.startsWith('prefix-'), true, 'appends prefix to start of key');
           const obj = JSON.parse(key.replace('prefix-', ''));
-          t.equal(obj.url.startsWith('http://'), true, 'cache key contains url');
+          t.equal(obj.path, '/whatever', 'cache key contains url');
           t.equal(obj.headers['x-api-key'], 1234, ' cache key contains requested header fields');
           t.equal(obj.headers['x-csrf-token'], '54321', ' cache key contains requested header fields');
           return callback(null, 1234);
