@@ -6,7 +6,6 @@ const Hapi = require('hapi');
 let server;
 
 tap.test('methods.fetchAndSet', (t) => {
-  const urlPath = '/url';
   async.autoInject({
     rapptor(done) {
       const rapptor = new Rapptor({ env: 'test' });
@@ -29,6 +28,7 @@ tap.test('methods.fetchAndSet', (t) => {
         method: 'get',
         path: '/url',
         handler(request, reply) {
+          t.equal(request.headers.header1, '1234', 'passes headers along');
           reply(null, { success: true });
         }
       });
@@ -38,7 +38,7 @@ tap.test('methods.fetchAndSet', (t) => {
           t.equal(value.success, true, 'sets value with result of HTTP GET');
         }
       };
-      server.methods.fetchAndSet(urlPath, 'key', done);
+      server.methods.fetchAndSet({ path: '/url', headers: { header1: 1234 } }, 'key', done);
     },
   }, (err, result) => {
     t.equal(err, null);

@@ -71,8 +71,8 @@ tap.test('route.proxy handles cache miss', (t) => {
       });
     },
     get(setup, testServer, done) {
-      server.methods.fetchAndSet = function(path, key, callback) {
-        t.equal(path, '/whatever', 'fetchAndSet gets correct path');
+      server.methods.fetchAndSet = function(obj, key, callback) {
+        t.equal(obj.path, '/whatever', 'fetchAndSet gets correct path');
         t.equal(key, 'prefix-{"path":"/whatever","headers":{}}', 'fetchAndSet gets correct cache key');
         return callback(null, 'origin');
       };
@@ -127,8 +127,8 @@ tap.test('route.proxy handles cache miss with HEADERS', (t) => {
       });
     },
     get(setup, testServer, done) {
-      server.methods.fetchAndSet = function(path, key, callback) {
-        t.equal(path, '/whatever', 'fetchAndSet gets correct path');
+      server.methods.fetchAndSet = function(obj1, key, callback) {
+        t.equal(obj1.path, '/whatever', 'fetchAndSet gets correct path');
         t.equal(key.startsWith('prefix-'), true, 'appends prefix to start of key');
         const obj = JSON.parse(key.replace('prefix-', ''));
         t.equal(obj.path, '/whatever', 'cache key contains url');
