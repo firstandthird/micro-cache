@@ -5,7 +5,8 @@ const Hapi = require('hapi');
 
 let server;
 
-tap.test('methods.getCacheKey', (t) => {
+tap.test('methods.getCacheKey can use HEADERS', (t) => {
+  process.env.HEADERS = 'x-api-key,X-Csrf-Token';
   async.autoInject({
     rapptor(done) {
       const rapptor = new Rapptor({});
@@ -18,18 +19,12 @@ tap.test('methods.getCacheKey', (t) => {
       return done(null, server);
     },
     cacheKey(setup, done) {
-      const key1A = server.methods.getCacheKey('/blah', { token: 123, sort: 'name' });
-      const key1B = server.methods.getCacheKey('/blah', { sort: 'name', token: '123' });
-      const key1C = server.methods.getCacheKey('/blah', { sort: 'name', token: '124' });
-      const key2A = server.methods.getCacheKey('/blah1/blah2', { sort: 'name', token: '123', clock: 1 });
-      const key2B = server.methods.getCacheKey('/blah1/blah2', { token: '123', sort: 'name', clock: 1 });
-      t.equal(key1A, key1B);
-      t.equal(key2A, key2B);
-      t.notEqual(key1A, key1C);
-      t.notEqual(key1A, key2A);
-      t.equal(key1A, 'prefix-/blah?sort=name&token=123');
-      t.equal(key1C, 'prefix-/blah?sort=name&token=124');
-      t.equal(key2A, 'prefix-/blah1/blah2?clock=1&sort=name&token=123');
+      const key1A = server.methods.getCacheKey({
+        url: { pathname: '/blah' },
+        query: { d: 2, a: 1 },
+        headers: { 'x-api-key': 1234, 'x-csrf-token': 'token' }
+      });
+      t.equal(key1A, 'prefix-{"path":"/blah?a=1&d=2","headers":{"x-api-key":1234,"x-csrf-token":"token"}}');
       done();
     }
   }, () => {

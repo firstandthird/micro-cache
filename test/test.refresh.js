@@ -40,15 +40,15 @@ tap.test('routes.refresh', (t) => {
     },
     inject(flush, setup, testServer, done) {
       const prefix = server.settings.app.redis.prefix;
-      server.store.set(`${prefix}-/key1`, 'value1');
-      server.store.set(`${prefix}-/key2`, 'value2');
-      server.store.set(`${prefix}-/doesNotMatch`, 'value1');
+      server.store.set(`${prefix}-${JSON.stringify({ path: '/key1' })}`, 'value1');
+      server.store.set(`${prefix}-${JSON.stringify({ path: '/key2' })}`, 'value2');
+      server.store.set(`${prefix}-${JSON.stringify({ path: '/doesNotMatch' })}`, 'value1');
       server.inject({
         method: 'POST',
         url: '/_refresh',
         payload: {
           secret: 'secret',
-          urls: ['/key*']
+          keys: ['/key*']
         },
       }, (response) => {
         t.equal(response.statusCode, 200, 'returns 200 OK');
@@ -60,19 +60,19 @@ tap.test('routes.refresh', (t) => {
     },
     get1(wait, done) {
       const prefix = server.settings.app.redis.prefix;
-      server.store.get(`${prefix}-/key1`, done);
+      server.store.get(`${prefix}-${JSON.stringify({ path: '/key1' })}`, done);
     },
     get2(wait, done) {
       const prefix = server.settings.app.redis.prefix;
-      server.store.get(`${prefix}-/key2`, done);
+      server.store.get(`${prefix}-${JSON.stringify({ path: '/key2' })}`, done);
     },
     get3(wait, done) {
       const prefix = server.settings.app.redis.prefix;
-      server.store.get(`${prefix}-/doesNotMatch`, done);
+      server.store.get(`${prefix}-${JSON.stringify({ path: '/doesNotMatch' })}`, done);
     },
     verify(wait, inject, get1, get2, get3, done) {
-      t.equal(get1, 1, 'updates matching cached value');
-      t.equal(get2, 2, 'updates matching cached value');
+      t.notEqual(get1, 'value1', 'updates matching cached value');
+      t.notEqual(get2, 'value2', 'updates matching cached value');
       t.equal(get3, 'value1', 'does not update non-matching cached value');
       done();
     },

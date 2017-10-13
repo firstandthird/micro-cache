@@ -9,7 +9,7 @@ module.exports.refresh = {
     validate: {
       payload: {
         secret: joi.string(),
-        urls: joi.array().items(joi.string())
+        keys: joi.array().items(joi.string())
       }
     }
   },
@@ -22,15 +22,15 @@ module.exports.refresh = {
     reply(null, { accepted: true });
     // refresh each url, add the prefix to make sure keys match:
     const prefix = server.settings.app.redis.prefix;
-    async.each(request.payload.urls, (url, eachDone) => {
-      server.methods.getKeys(`${prefix}-${url}`, (err, urlList) => {
+    async.each(request.payload.keys, (key, eachDone) => {
+      server.methods.getKeys(`${prefix}*${key}`, (err, urlList) => {
         if (err) {
           server.log(err);
         }
         urlList.forEach((retrievedKey) => {
-          const urlToCall = retrievedKey.replace(`${prefix}-`, '');
-          server.log(['micro-cache'], { message: 'refreshing key', key: retrievedKey, url: urlToCall });
-          server.methods.fetchAndSet(urlToCall, retrievedKey, (fetchErr, result) => {
+          const obj = JSON.parse(retrievedKey.replace(`${prefix}-`, ''));
+          server.log(['micro-cache'], { message: 'refreshing key', key: retrievedKey, url: obj.path, headers: obj.headers });
+          server.methods.fetchAndSet(obj, retrievedKey, (fetchErr, result) => {
             if (fetchErr) {
               server.log(fetchErr);
             }

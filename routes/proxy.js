@@ -3,7 +3,7 @@ module.exports.proxy = {
   path: '/{path*}',
   handler(request, reply) {
     const server = request.server;
-    const cacheKey = server.methods.getCacheKey(request.url.pathname, request.query);
+    const cacheKey = server.methods.getCacheKey(request);
     server.store.get(cacheKey, (err, cachedValue) => {
       if (err) {
         return reply(err);
@@ -12,7 +12,7 @@ module.exports.proxy = {
         server.log(['micro-cache'], { key: cacheKey, cache: 'hit' });
         return reply(null, cachedValue);
       }
-      server.methods.fetchAndSet(request.url.path, cacheKey, (originErr, originValue) => {
+      server.methods.fetchAndSet({ path: request.url.path }, cacheKey, (originErr, originValue) => {
         if (originErr) {
           return reply(originErr);
         }
