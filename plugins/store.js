@@ -56,6 +56,9 @@ exports.register = function(server, options, next) {
     set: (key, value) => {
       const store = typeof value === 'object' ? JSON.stringify(value) : value.toString();
       cache.set.bind(cache)(key, store);
+      if (settings.redis.ttl) {
+        cache.expire.bind(cache)(key, settings.redis.ttl);
+      }
     },
     scan: scan.bind(cache),
     flush: cache.flushall.bind(cache) // used for unit tests
