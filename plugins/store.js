@@ -60,7 +60,7 @@ exports.register = function(server, options, next) {
         cache.expire(key, settings.redis.ttl);
       }
     },
-    scan,
+    scan: scan.bind(cache),
     flush: cache.flushall.bind(cache) // used for unit tests
   });
   let running = true;
