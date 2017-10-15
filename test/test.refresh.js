@@ -15,6 +15,7 @@ tap.test('routes.refresh', (t) => {
     setup(rapptor, done) {
       server = rapptor[0];
       server.settings.app.redis.prefix = 'prefix';
+      server.settings.app.secret = 'secret';
       server.settings.app.origin = 'http://localhost:3000';
       return done(null, server);
     },
