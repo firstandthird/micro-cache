@@ -44,7 +44,7 @@ exports.register = function(server, options, next) {
         if (err) {
           return done(err);
         }
-        // try to parse as json, return as string otherwise:
+        // try to parse as json:
         try {
           const obj = JSON.parse(store);
           return done(null, obj.value);
