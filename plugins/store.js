@@ -46,16 +46,15 @@ exports.register = function(server, options, next) {
         }
         // try to parse as json, return as string otherwise:
         try {
-          const value = JSON.parse(store);
-          return done(null, value);
+          const obj = JSON.parse(store);
+          return done(null, obj.value);
         } catch (e) {
-          return done(null, store.toString());
+          return done(e);
         }
       });
     },
     set: (key, value) => {
-      const store = typeof value === 'object' ? JSON.stringify(value) : value.toString();
-      cache.set.bind(cache)(key, store);
+      cache.set.bind(cache)(key, JSON.stringify({ value }));
     },
     scan: scan.bind(cache),
     flush: cache.flushall.bind(cache) // used for unit tests
