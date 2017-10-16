@@ -40,7 +40,7 @@ exports.register = function(server, options, next) {
 
   server.decorate('server', 'store', {
     get: (key, done) => {
-      cache.get.bind(cache)(key, (err, store) => {
+      cache.get(key, (err, store) => {
         if (err) {
           return done(err);
         }
@@ -54,7 +54,10 @@ exports.register = function(server, options, next) {
       });
     },
     set: (key, value) => {
-      cache.set.bind(cache)(key, JSON.stringify({ value }));
+      cache.set(key, JSON.stringify({ value }));
+      if (settings.redis.ttl) {
+        cache.expire(key, settings.redis.ttl);
+      }
     },
     scan: scan.bind(cache),
     flush: cache.flushall.bind(cache) // used for unit tests

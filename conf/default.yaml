@@ -6,6 +6,7 @@ redis:
   port: '{{ENV.REDIS_PORT || 6379}}'
   password: '{{ENV.REDIS_PASSWORD}}'
   prefix: '{{ENV.REDIS_PREFIX || "micro-cache"}}'
+  ttl: '{{ENV.TTL}}'
 plugins:
   hapi-auto-handler:
     _priority: -5
